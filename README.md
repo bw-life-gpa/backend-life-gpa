@@ -1,16 +1,16 @@
 # Backend-Life-Gpa
 
-##
-
 **Backend Architect:** Elisha Atulomah
+
+##
 
 ### Live Backend URL:
 
-###
+##
 
 [Technical Design Document](https://docs.google.com/document/d/1kYs8G4W65JW59-OyD9Uzbde-IDhUXHZxo2zBkVksfBU/edit)
 
-/--------------------------------------------/ REGISTER /---------------------------------------/
+**/--------------------------------------------/ REGISTER /---------------------------------------/**
 
 ###
 
@@ -72,7 +72,7 @@ _http method_: **[POST]**
   }
 ```
 
-/--------------------------------------------/ LOGIN /---------------------------------------/
+**/--------------------------------------------/ LOGIN /---------------------------------------/**
 
 ### **Login a user**
 
@@ -113,7 +113,7 @@ _http method_: **[POST]**
 ```
 {
     "id":2,
-    "username":"sitatl",
+    "username":"siratl",
     "fullName":"Elisha Atulomah",
     "email":null,
     "userImgUrl":null,
@@ -137,7 +137,7 @@ _http method_: **[POST]**
 }
 ```
 
-/--------------------------------------------/ ALL USERS /-----------------------------------------/
+**/--------------------------------------------/ ALL USERS /-----------------------------------------/**
 
 ### **Get all Users**
 
@@ -172,7 +172,7 @@ _http method_: **[GET]**
 ]
 ```
 
-/--------------------------------------------/ SINGLE USER /---------------------------------/
+**/--------------------------------------------/ SINGLE USER /-----------------------------------/**
 
 ### **Get a single User**
 
@@ -199,7 +199,46 @@ _http method_: **[GET]**
 ]
 ```
 
-/--------------------------------------------/ CREATE HABIT /-----------------------------------/
+**/------------------------------------------/ ALL CATEGORIES /-------------------------------------/**
+
+### **Get Categories**
+
+_method url_: `/api/categories`
+
+_http method_: **[GET]**
+
+#### Headers
+
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `authorization` | String | Yes      | token to Authorize user  |
+
+#### Response
+
+##### 200 (ok)
+
+###### Example response
+
+```
+{
+    "id": 2,
+    "categoryTitle": "Crossfit Training",
+    "color": "red",
+}
+```
+
+##### 403 (Forbidden)
+
+###### Example Response
+
+```
+  {
+    "message": "Invalid token"
+  }
+```
+
+**/--------------------------------------------/ CREATE HABIT /-----------------------------------/**
 
 ### **Create a Habit**
 
@@ -216,18 +255,18 @@ _http method_: **[POST]**
 
 #### Body
 
-| name         | type    | required | description |
-| ------------ | ------- | -------- | ----------- |
-| `habitTitle` | String  | Yes      |             |
-| `completed`  | Boolean | Yes      |             |
-| `category`   | String  | Yes      |             |
+| name               | type    | required | description |
+| ------------------ | ------- | -------- | ----------- |
+| `habitTitle`       | String  | Yes      |             |
+| `completed`        | Boolean | No       |             |
+| `completionPoints` | Integer | No       |             |
 
 #### Example
 
 ```
   {
     "habitTitle": "Run 10 miles",
-    "category": "Physical Fitness",
+    "categoryId": "Physical Fitness",
   }
 ```
 
@@ -241,9 +280,10 @@ _http method_: **[POST]**
   {
     "id": 1,
     "habitTitle": "Run 10 miles",
-    "category": "Physical Fitness",
     "completed": false,
-    "userId": 2
+    "completionPoints": 0,
+    "userId": 2,
+    "categoryId": 1,
   }
 ```
 
@@ -253,15 +293,15 @@ _http method_: **[POST]**
 
 ```
   {
-    "message": "invalid token"
+    "message": "Invalid token"
   }
 ```
 
-/------------------------------------------/ USER HABITS /-------------------------------------/
+**/------------------------------------------/ USER HABITS /-------------------------------------/**
 
 ### **Get a User with all Habits**
 
-_method url_: `/api/user/habits/:id (id meaning userId)`
+_method url_: `/api/users/habits/:id (id meaning userId)`
 
 _http method_: **[GET]**
 
@@ -291,23 +331,26 @@ _http method_: **[GET]**
         {
             "id": 2,
             "habitTitle": "Run 10 miles",
-            "category": "Physical Fitness",
             "completed": false,
-            "userId": 2
+            "completionPoints": 0,
+            "userId": 2,
+            "categoryId": 1,
         },
         {
-          "id": 3,
+            "id": 3,
             "habitTitle": "Eat Fruit",
-            "category": "Healthy Living",
             "completed": false,
-            "userId": 2
+            "completionPoints": 0,
+            "userId": 2,
+            "categoryId": 3,
         },
         {
-          "id": 4,
+            "id": 4,
             "habitTitle": "Study React",
-            "category": "Personal Development",
             "completed": false,
-            "userId": 2
+            "completionPoints": 0,
+            "userId": 2,
+            "categoryId": 4,
         },
         ]
     }
@@ -320,11 +363,78 @@ _http method_: **[GET]**
 
 ```
   {
-    "message": "invalid token"
+    "message": "Invalid token"
   }
 ```
 
-/----------------------------------------/ EDIT USER ACCOUNT /----------------------------------/
+**/------------------------------------------/ CATEGORY HABITS /-------------------------------------/**
+
+### **Get Habits by Category**
+
+_method url_: `/api/categories/habits/:id (id meaning categoryId)`
+
+_http method_: **[GET]**
+
+#### Headers
+
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `authorization` | String | Yes      | token to Authorize user  |
+
+#### Response
+
+##### 200 (ok)
+
+###### Example response
+
+```
+[
+  {
+    "id": 2,
+    "categoryTitle": "Physical Fitness",
+    "color": "red",
+    "habits": [
+        {
+            "id": 1,
+            "habitTitle": "Run 10 miles",
+            "completed": false,
+            "completionPoints": 0,
+            "userId": 3,
+            "categoryId": 2,
+        },
+        {
+            "id": 2,
+            "habitTitle": "Walk 5 miles",
+            "completed": false,
+            "completionPoints": 0,
+            "userId": 3,
+            "categoryId": 2,
+        },
+        {
+            "id": 3,
+            "habitTitle": "Crossfit Training",
+            "completed": false,
+            "completionPoints": 0,
+            "userId": 3,
+            "categoryId": 2,
+        },
+        ]
+    }
+]
+```
+
+##### 403 (Forbidden)
+
+###### Example Response
+
+```
+  {
+    "message": "Invalid token"
+  }
+```
+
+**/----------------------------------------/ EDIT USER ACCOUNT /------------------------------------/**
 
 ### **Edit a User Account**
 
@@ -391,7 +501,7 @@ _http method_: **[PUT]**
   }
 ```
 
-/------------------------------------------/ DELETE ACCOUNT /-------------------------------------/
+**/------------------------------------------/ DELETE ACCOUNT /-------------------------------------/**
 
 ### **Delete an Account**
 
@@ -434,13 +544,13 @@ _http method_: **[DELETE]**
 
 ```
   {
-    "message": "invalid token"
+    "message": "Invalid token"
   }
 ```
 
-/------------------------------------------/ GET HABIT /-------------------------------------/
+**/------------------------------------------/ GET HABIT /----------------------------------------/**
 
-### **Get a single Habit**
+### **Get a Single Habit**
 
 _method url_: `/api/habits/:id (as in id of the habit)`
 
@@ -463,9 +573,10 @@ _http method_: **[GET]**
 {
     "id": 12,
     "habitTitle": "Run 10 miles",
-    "category": "Physical Fitness",
     "completed": false,
-    "userId": 2"
+    "completionPoints": 0,
+    "userId": 2,
+    "categoryId": 1,
 }
 ```
 
@@ -475,11 +586,11 @@ _http method_: **[GET]**
 
 ```
   {
-    "message": "invalid token"
+    "message": "Invalid token"
   }
 ```
 
-/------------------------------------------/ EDIT HABIT /-------------------------------------/
+**/------------------------------------------/ EDIT HABIT /---------------------------------------/**
 
 ### **Edit a Habit**
 
@@ -496,18 +607,17 @@ _http method_: **[PUT]**
 
 #### Body
 
-| name         | type    | required | description |
-| ------------ | ------- | -------- | ----------- |
-| `habitTitle` | String  | No       |             |
-| `category`   | String  | No       |             |
-| `completed`  | Boolean | Yes      |             |
+| name               | type    | required | description |
+| ------------------ | ------- | -------- | ----------- |
+| `habitTitle`       | String  | No       |             |
+| `completed`        | Boolean | No       |             |
+| `completionPoints` | Integer | No       |             |
 
 #### Example
 
 ```
   {
     "habitTitle": "Run 5 miles",
-    "category": "Marathon Training",
   }
 ```
 
@@ -529,7 +639,7 @@ _http method_: **[PUT]**
 
 ```
   {
-    "errorMessage": "Not authorized to edit this habit."
+    "errorMessage": "You are not authorized to edit this habit."
   }
 ```
 
@@ -539,11 +649,73 @@ _http method_: **[PUT]**
 
 ```
   {
-    "message": "invalid token"
+    "message": "Invalid token"
   }
 ```
 
-/------------------------------------------/ DELETE HABIT /-------------------------------------/
+**/------------------------------------------/ EDIT CATEGORY /-------------------------------------/**
+
+### **Edit a Category**
+
+_method url_: `/api/categories/:id`
+
+_http method_: **[PUT]**
+
+#### Headers
+
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `authorization` | String | Yes      | token to Authorize user  |
+
+#### Body
+
+| name            | type   | required | description |
+| --------------- | ------ | -------- | ----------- |
+| `categoryTitle` | String | No       |             |
+| `color`         | String | No       |             |
+
+#### Example
+
+```
+  {
+    "categoryTitle": "Physical Fitness",
+  }
+```
+
+#### Response
+
+##### 200 (ok)
+
+###### Example Response
+
+```
+  {
+    "message":"Your Category has been Updated."
+  }
+```
+
+##### 401 (Unauthorized)
+
+###### Example Response
+
+```
+  {
+    "errorMessage": "You are not authorized to edit this category."
+  }
+```
+
+##### 403 (Forbidden)
+
+###### Example Response
+
+```
+  {
+    "message": "Invalid token"
+  }
+```
+
+**/------------------------------------------/ DELETE HABIT /---------------------------------------/**
 
 ### **Delete a Habit**
 
@@ -586,6 +758,6 @@ _http method_: **[DELETE]**
 
 ```
   {
-    "message": "invalid token"
+    "message": "Invalid token"
   }
 ```
