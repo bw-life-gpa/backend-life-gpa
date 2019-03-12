@@ -19,7 +19,7 @@ function authenticate(req, res, next) {
     });
   } else {
     res.status(401).json({
-      message: 'No token provided! You must login to view Users',
+      message: 'No token provided! You must login to perform action.',
     });
   }
 }

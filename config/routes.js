@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const db = require('../database/dbConfig');
+const helper = require('../helpers/helpers');
 
 const { authenticate } = require('../auth/authenticate');
 const { generateToken } = require('../auth/tokenService');
@@ -17,16 +18,16 @@ module.exports = server => {
   server.get('/api/users', authenticate, getUsers);
   server.get('/api/users/:id', authenticate, getUser);
   server.put('/api/users/:id', authenticate, updateUser);
-  //server.delete('/api/users/:id', deleteUser);
-  server.post('/api/habits', authenticate, createHabit);
-  server.get('/api/habits', getHabits);
-  //server.get('/api/habits/:id', getHabit);
-  //server.get('/api/users/habits/:id', getUserHabits);
-  //server.put('/api/habits/:id', updateHabit);
+  server.delete('/api/users/:id', authenticate, deleteUser);
+  server.post('/api/habits', authenticate, createHabit); //--****-- NEED TO FIX/BROKEN --****---/
+  server.get('/api/habits', authenticate, getHabits);
+  server.get('/api/habits/:id', authenticate, getHabit);
+  server.get('/api/users/habits/:id', authenticate, getUserHabits);
+  server.put('/api/habits/:id', authenticate, updateHabit);
   //server.delete('/api/habits/:id', deleteHabit);
-  //server.get('/api/categories', getCategories);
-  //server.get('/api/categories/habits/:id', getCategoryHabits);
-  //server.put('/api/categories/:id', updateCategory);
+  server.get('/api/categories', authenticate, getCategories);
+  server.get('/api/categories/habits/:id', authenticate, getCategoryHabits);
+  server.put('/api/categories/:id', authenticate, updateCategory);
 };
 
 //******************** REGISTER NEW USER ******************/
@@ -150,39 +151,44 @@ function updateUser(req, res) {
     });
 }
 
+//************************** DELETE USER *************************/
+function deleteUser(req, res) {
+  const { id } = req.params;
+
+  db('users');
+  helper
+    .removeUser(id)
+    .then(deleted => {
+      if (!deleted) {
+        res.status(404).json({
+          message: `User with specified id: ${req.params.id} not found.`,
+        });
+      } else {
+        res.status(200).json({ message: 'User Deleted!', deleted });
+      }
+    })
+    .catch(err => res.status(500).json(err));
+}
+
 //******************** CREATE HABIT ******************/
 function createHabit(req, res) {
-  const { habitTitle, userId } = req.body;
-  const newHabit = {
-    habitTitle,
-    userId,
-    created_at,
-  };
+  const { habitTitle, completed } = req.body;
+  const newHabit = { habitTitle, completed };
 
   if (!habitTitle) {
     return res.status(417).json({
       error: 'A habitTitle is REQUIRED to create a new habit.',
     });
-  } else {
-    db('users')
-      .where({ id: newHabit.id })
-      .then(habit => {
-        if (habit) {
-          db('habits')
-            .insert(newHabit)
-            .then(habits => {
-              res
-                .status(201)
-                .json({ habits, message: 'Habit added sucessfully' });
-            })
-            .catch(err => {
-              res.status(500).json({ error: 'The habit could not be saved.' });
-            });
-        } else {
-          res.status(500).json({ error: 'No valid User Id found.' });
-        }
-      });
   }
+  db('habits');
+  helper
+    .add(newHabit)
+    .then(ids => {
+      res.status(201).json({ newHabit, message: 'Habit added sucessfully' });
+    })
+    .catch(err => {
+      res.status(500).json({ error: 'The habit could not be saved.' });
+    });
 }
 
 //******************** GET ALL HABITS ******************/
@@ -192,4 +198,133 @@ function getHabits(req, res) {
       res.json(habit);
     })
     .catch(err => res.send(err));
+}
+
+//******************** GET HABIT ******************/
+function getHabit(req, res) {
+  db('habits')
+    .where({ id: req.params.id })
+    .then(habit => {
+      if (habit.length > 0) {
+        res.status(200).json(habit);
+      } else {
+        res.status(404).json({
+          errorMessage: `The habit with the specified id: ${
+            req.params.id
+          } does not exist.`,
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ error: 'Server cannot retrieve Habit.' });
+    });
+}
+
+//******************** GET USER HABITS ******************/
+function getUserHabits(req, res) {
+  db('users');
+  helper
+    .getHabitsByUser(req.params.id)
+    .then(habit => {
+      if (habit) {
+        res.json(habit);
+      } else {
+        res.status(404).json({
+          errorMessage: `The user with the specified ID '${
+            req.params.id
+          }' does not exist.`,
+        });
+      }
+    })
+    .catch(() => {
+      res.status(500).json({
+        error: `The Specified user '${
+          req.params.id
+        }' habit(s) could not be retrieved.`,
+      });
+    });
+}
+
+//******************** UPDATE HABIT ******************/
+function updateHabit(req, res) {
+  const changes = req.body;
+
+  db('habits')
+    .where({ id: req.params.id })
+    .update(changes)
+    .then(count => {
+      count
+        ? res.status(200).json({
+            message: 'Habit update sucessfull',
+            updated: changes,
+          })
+        : res
+            .status(404)
+            .json({ error: 'The Habit with the specified ID does not exist.' });
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: `The Habit information could not be modified.` });
+    });
+}
+
+//******************** GET CATEGORIES ******************/
+function getCategories(req, res) {
+  db('category')
+    .then(category => {
+      res.json(category);
+    })
+    .catch(err => res.send(err));
+}
+
+//******************** GET HABIT CATEGORIES ******************/
+function getCategoryHabits(req, res) {
+  db('habits');
+  helper
+    .getCategoryByHabits(req.params.id)
+    .then(category => {
+      if (category.length > 0) {
+        res.json(category);
+      } else {
+        res.status(404).json({
+          errorMessage: `The Habit with the specified ID '${
+            req.params.id
+          }' does not exist.`,
+        });
+      }
+    })
+    .catch(() => {
+      res.status(500).json({
+        error: `The specified Habit '${
+          req.params.id
+        }' category(ies) could not be retrieved.`,
+      });
+    });
+}
+
+//******************** UPDATE CATEGORY ******************/
+function updateCategory(req, res) {
+  const changes = req.body;
+
+  db('category')
+    .where({ id: req.params.id })
+    .update(changes)
+    .then(count => {
+      count
+        ? res.status(200).json({
+            message: 'Category update sucessfull',
+            updated: changes,
+          })
+        : res.status(404).json({
+            error: `The Category with the specified ID: ${
+              req.params.id
+            } does not exist.`,
+          });
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: `The Category information could not be modified.` });
+    });
 }

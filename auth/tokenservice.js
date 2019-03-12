@@ -13,7 +13,7 @@ function generateToken(user) {
   };
 
   const options = {
-    expiresIn: '40m',
+    expiresIn: '1d',
   };
 
   return jwt.sign(payload, secret, options);

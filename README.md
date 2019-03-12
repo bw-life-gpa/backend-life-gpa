@@ -260,6 +260,7 @@ _http method_: **[POST]**
 | `habitTitle`       | String  | Yes      |             |
 | `completed`        | Boolean | No       |             |
 | `completionPoints` | Integer | No       |             |
+| `created_at`       | String  | No       |             |
 
 #### Example
 
@@ -284,6 +285,7 @@ _http method_: **[POST]**
     "completionPoints": 0,
     "userId": 2,
     "categoryId": 1,
+    "created_at": "2019-03-12 16:47:27"
   }
 ```
 
@@ -335,6 +337,7 @@ _http method_: **[GET]**
             "completionPoints": 0,
             "userId": 2,
             "categoryId": 1,
+            "created_at": "2019-03-12 10:07:27"
         },
         {
             "id": 3,
@@ -343,6 +346,7 @@ _http method_: **[GET]**
             "completionPoints": 0,
             "userId": 2,
             "categoryId": 3,
+            "created_at": "2019-03-12 17:57:27"
         },
         {
             "id": 4,
@@ -351,6 +355,7 @@ _http method_: **[GET]**
             "completionPoints": 0,
             "userId": 2,
             "categoryId": 4,
+            "created_at": "2019-01-12 12:41:27"
         },
         ]
     }
@@ -402,6 +407,7 @@ _http method_: **[GET]**
             "completionPoints": 0,
             "userId": 3,
             "categoryId": 2,
+            "created_at": "2019-01-22 10:45:31"
         },
         {
             "id": 2,
@@ -410,6 +416,7 @@ _http method_: **[GET]**
             "completionPoints": 0,
             "userId": 3,
             "categoryId": 2,
+            "created_at": "2019-04-02 06:37:44"
         },
         {
             "id": 3,
@@ -418,6 +425,7 @@ _http method_: **[GET]**
             "completionPoints": 0,
             "userId": 3,
             "categoryId": 2,
+            "created_at": "2019-02-14 18:18:27"
         },
         ]
     }
@@ -712,6 +720,16 @@ _http method_: **[PUT]**
 ```
   {
     "message": "Invalid token"
+  }
+```
+
+##### 500 (Server Error)
+
+###### Example Response
+
+```
+  {
+    "message": "Does not exist"
   }
 ```
 
