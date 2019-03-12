@@ -12,6 +12,13 @@ exports.seed = function(knex, Promise) {
           userId: 1,
           created_at: knex.fn.now(),
         },
+        {
+          habitTitle: 'Lift 200lbs',
+          completed: false,
+          completionPoints: 0,
+          userId: 1,
+          created_at: knex.fn.now(),
+        },
       ]);
     });
 };
