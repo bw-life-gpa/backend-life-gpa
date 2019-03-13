@@ -5,7 +5,7 @@ const db = require('../database/dbConfig');
 const helper = require('../helpers/helpers');
 
 const { authenticate } = require('../auth/authenticate');
-const { generateToken } = require('../auth/tokenService');
+const { generateToken } = require('../auth/tokenservice');
 
 module.exports = server => {
   server.get('/', (req, res) => {
