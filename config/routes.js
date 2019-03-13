@@ -30,6 +30,7 @@ module.exports = server => {
   server.get('/api/users/habits/:id', authenticate, getUserHabits);
   server.put('/api/habits/:id', authenticate, updateHabit);
   //server.delete('/api/habits/:id', deleteHabit);
+  server.post('/api/categories', authenticate, createCategory);
   server.get('/api/categories', authenticate, getCategories);
   server.get('/api/categories/habits/:id', authenticate, getCategoryHabits);
   server.get('/api/users/categories/:id', authenticate, getUserCategories);
@@ -66,7 +67,7 @@ function register(req, res) {
             .status(201)
             .json({
               id: user.id,
-              message: 'User registration Sucessful.',
+              message: 'User registration Successful.',
             })
             .catch(err =>
               res.status(500).json({ message: 'Unable to register new User.' }),
@@ -144,7 +145,7 @@ function updateUser(req, res) {
     .then(didUpdate => {
       didUpdate
         ? res.status(200).json({
-            message: 'Your account update sucessfull',
+            message: 'Your account update successful',
             updated: changes,
           })
         : res.status(404).json({
@@ -202,10 +203,10 @@ function createHabit(req, res) {
   //   }
 
   helper
-    .add(newHabit)
+    .addHabit(newHabit)
     .then(ids => {
       console.log(newHabit);
-      res.status(201).json({ ids, message: 'Habit added sucessfully' });
+      res.status(201).json({ ids, message: 'Habit added successfully' });
     })
     .catch(err => {
       console.log(newHabit);
@@ -281,7 +282,7 @@ function updateHabit(req, res) {
     .then(count => {
       count
         ? res.status(200).json({
-            message: 'Habit update sucessfull',
+            message: 'Habit update successful',
             updated: changes,
           })
         : res
@@ -292,6 +293,46 @@ function updateHabit(req, res) {
       res
         .status(500)
         .json({ error: `The Habit information could not be modified.` });
+    });
+}
+
+//******************** CREATE CATEGORY ******************/
+function createCategory(req, res) {
+  const { categoryTitle, color, userId } = req.body;
+  const category = { categoryTitle, color, userId };
+
+  if (!categoryTitle || !color || !userId) {
+    res.status(412).json({
+      errorMessage: 'The categoryTitle, color and userId are Required fields.',
+    });
+  }
+
+  db('category')
+    .insert(category)
+    .then(ids => {
+      const id = ids[0];
+
+      db('category')
+        .where({ id })
+        .first()
+        .then(categories => {
+          res
+            .status(201)
+            .json({
+              message: 'Category creation Successful.',
+              categories,
+            })
+            .catch(err =>
+              res
+                .status(500)
+                .json({ errorMessage: 'Error creating Category.' }),
+            );
+        })
+        .catch(err =>
+          res
+            .status(500)
+            .json({ errorMessage: 'Category could not be created.' }),
+        );
     });
 }
 
@@ -372,7 +413,7 @@ function updateCategory(req, res) {
     .then(count => {
       count
         ? res.status(200).json({
-            message: 'Category update sucessfull',
+            message: 'Category update successful',
             updated: changes,
           })
         : res.status(404).json({

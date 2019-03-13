@@ -1,7 +1,8 @@
 const db = require('../database/dbConfig');
 
 module.exports = {
-  add,
+  addHabit,
+  addCategory,
   removeUser,
   getUserById,
   getCategoryById,
@@ -13,8 +14,12 @@ module.exports = {
 };
 
 //******************************** HELPER FUNCTIONS ***************/
-function add(habit) {
+function addHabit(habit) {
   return db('habits').insert(habit);
+}
+
+function addCategory(category) {
+  return db('category').insert(category);
 }
 
 function removeUser(id) {

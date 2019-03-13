@@ -203,6 +203,84 @@ _http method_: **[GET]**
 ]
 ```
 
+**/--------------------------------------------/ CREATE CATEGORY /-----------------------------------/**
+
+### **Create a Category**
+
+_method url_: `/api/categories`
+
+_http method_: **[POST]**
+
+#### Headers
+
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `authorization` | String | Yes      | token to Authorize user  |
+
+#### Body
+
+| name            | type    | required | description |
+| --------------- | ------- | -------- | ----------- |
+| `categoryTitle` | String  | Yes      |             |
+| `color`         | String  | Yes      |             |
+| `userId`        | Integer | Yes      |             |
+
+#### Example
+
+```
+  {
+    "categoryTitle": "Physical Endurance",
+    "color": "red",
+    "userId": 2,
+  }
+```
+
+#### Response
+
+##### 201 (created)
+
+###### Example Response
+
+```
+ {
+    "id": 3,
+    "categoryTitle": "Physical Endurance",
+    "color": "red",
+    "userId": 2
+  },
+```
+
+##### 403 (Forbidden)
+
+###### Example Response
+
+```
+  {
+    "message": "Invalid token"
+  }
+```
+
+##### 401 (Unauthorized)
+
+###### Example Response
+
+```
+{
+    "message": "No token provided! You must login to perform action."
+}
+```
+
+##### 500 (Server Error)
+
+###### Example Response
+
+```
+{
+    "errorMessage": "Category could not be created."
+}
+```
+
 **/------------------------------------------/ ALL CATEGORIES /-------------------------------------/**
 
 ### **Get Categories**
@@ -229,6 +307,7 @@ _http method_: **[GET]**
     "id": 2,
     "categoryTitle": "Crossfit Training",
     "color": "red",
+    "userId": 1
 }
 ```
 
