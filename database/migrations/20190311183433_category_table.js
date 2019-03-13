@@ -8,11 +8,11 @@ exports.up = function(knex) {
       .unique();
     tbl.string('color');
     tbl
-      .integer('habitId')
+      .integer('userId')
       .unsigned()
       .notNullable()
       .references('id')
-      .inTable('habit');
+      .inTable('users');
   });
 };
 
