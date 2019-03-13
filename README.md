@@ -372,6 +372,85 @@ _http method_: **[GET]**
   }
 ```
 
+##### 404 (Not Found)
+
+###### Example Response
+
+```
+  {
+    "message": "User Not Found"
+  }
+```
+
+**/------------------------------------------/ USER CATEGORIES /-------------------------------------/**
+
+### **Get a User with all Categories**
+
+_method url_: `/api/users/categories/:id (id meaning userId)`
+
+_http method_: **[GET]**
+
+#### Headers
+
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `authorization` | String | Yes      | token to Authorize user  |
+
+#### Response
+
+##### 200 (ok)
+
+###### Example response
+
+```
+[
+  {
+    "id": 2,
+    "username": "siratl",
+    "password": "$2a$12$xEMuC6KExFMmz95p6jIAoe4CYT1oDPGBPHpxjR4FjIMmUGO09iR.m",
+    "fullName": "Elisha Atulomah",
+    "email": null,
+    "userImgUrl": null,
+    "category": [
+        {
+          "id": 1,
+          "categoryTitle": "Physical Fitness",
+          "color": "red",
+          "userId": 1
+        },
+        {
+          "id": 3,
+          "categoryTitle": "Physical Endurance",
+          "color": "red",
+          "userId": 1
+        },
+
+        ]
+    }
+]
+```
+
+##### 403 (Forbidden)
+
+###### Example Response
+
+```
+  {
+    "message": "Invalid token"
+  }
+```
+
+##### 404 (Not Found)
+
+###### Example Response
+
+```
+  {
+    "message": "User Not Found"
+  }
+```
+
 **/------------------------------------------/ CATEGORY HABITS /-------------------------------------/**
 
 ### **Get Habits by Category**
