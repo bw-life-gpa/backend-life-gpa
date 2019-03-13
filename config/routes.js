@@ -9,10 +9,15 @@ const { generateToken } = require('../auth/tokenservice');
 
 module.exports = server => {
   server.get('/', (req, res) => {
-    res.send(
-      `\n\t\t=== It's alive! ===\n=== Login endpoint '/api/login' ===\n=== Register endpoint '/api/register' ===`,
-    );
+    res.send(`
+      <div>
+        <h2>Server Running Live</h2>
+        <p>Url to Login endpoint <strong>'/api/login'</strong></p>
+        <p>Url to Register endpoint <strong>'/api/register'</strong></p>
+      </div>`);
   });
+
+  //****************************** ENDPOINTS *****************************/
   server.post('/api/register', register);
   server.post('/api/login', login);
   server.get('/api/users', authenticate, getUsers);
@@ -43,7 +48,7 @@ function register(req, res) {
       'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
   }
   if (!username || !password || !fullName || !email) {
-    return res.status(400).json({
+    return res.status(412).json({
       errorMessage: `One or more inputs missing, username, password, fullName and email are Required fields.`,
     });
   }
@@ -87,6 +92,7 @@ function login(req, res) {
 
         res.status(200).json({
           message: `Welcome ${user.username}! Token registered...`,
+          user,
           token,
         });
       } else {
@@ -94,7 +100,7 @@ function login(req, res) {
       }
     })
     .catch(err =>
-      res.status(500).json({
+      res.status(400).json({
         message: 'No valid user credentials provided, please register...',
       }),
     );
@@ -180,14 +186,16 @@ function deleteUser(req, res) {
 
 //******************** CREATE HABIT ******************/
 function createHabit(req, res) {
-  const body = req.body;
+  const { habitTitle, userId, categoryId } = req.body;
   const newHabit = {
-    ...body,
+    habitTitle,
+    userId,
+    categoryId,
     completed: false,
     completionPoints: 0,
   };
 
-  //   if (!body) {
+  //   if (!habitTitle || !userId || !categoryId) {
   //     return res.status(417).json({
   //       error: 'A habitTitle is REQUIRED to create a new habit.',
   //     });

@@ -4,7 +4,7 @@
 
 ##
 
-### Live Backend URL:
+### Live Backend URL: https://lifegpa.herokuapp.com/
 
 ##
 
@@ -112,28 +112,32 @@ _http method_: **[POST]**
 
 ```
 {
-    "id":2,
-    "username":"siratl",
-    "fullName":"Elisha Atulomah",
-    "email":null,
-    "userImgUrl":null,
-    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybmk"
+    "message": "Welcome siratl! Token registered...",
+    "user": {
+        "id": 1,
+        "username": "siratl",
+        "password": "$2a$11$YNf76GrgcFn6YJsQgmr1luICjYOdIz.Y3cEeve1fG9YYRn6kCewFa",
+        "fullName": "Elisha Atulomah",
+        "email": "elisha@gmail.com",
+        "userImgUrl": "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+    }
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybmk",
 }
-```
-
-##### 400 (Bad Request)
-
-```
-  {
-    errorMessage: 'missing ${itemMissing}'
-  }
 ```
 
 ##### 401 (Unauthorized)
 
 ```
+  {
+    errorMessage: 'Invalid Credentials, try again...'
+  }
+```
+
+##### 400 (Bad Request)
+
+```
 {
-  errorMessage: "passwords don't match"
+  errorMessage: "No valid user credentials provided, please register..."
 }
 ```
 
@@ -259,6 +263,8 @@ _http method_: **[POST]**
 | ------------------ | ------- | -------- | ----------- |
 | `habitTitle`       | String  | Yes      |             |
 | `completed`        | Boolean | No       |             |
+| `userId`           | Integer | Yes      |             |
+| `categoryId`       | Integer | Yes      |             |
 | `completionPoints` | Integer | No       |             |
 | `created_at`       | String  | No       |             |
 
@@ -267,7 +273,8 @@ _http method_: **[POST]**
 ```
   {
     "habitTitle": "Run 10 miles",
-    "categoryId": "Physical Fitness",
+    "categoryId": 1,
+    "userId": 2,
   }
 ```
 
