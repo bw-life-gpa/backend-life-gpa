@@ -340,14 +340,14 @@ _http method_: **[POST]**
 
 #### Body
 
-| name               | type    | required | description |
-| ------------------ | ------- | -------- | ----------- |
-| `habitTitle`       | String  | Yes      |             |
-| `completed`        | Boolean | No       |             |
-| `userId`           | Integer | Yes      |             |
-| `categoryId`       | Integer | Yes      |             |
-| `completionPoints` | Integer | No       |             |
-| `created_at`       | String  | No       |             |
+| name               | type    | required | description                                         |
+| ------------------ | ------- | -------- | --------------------------------------------------- |
+| `habitTitle`       | String  | Yes      |                                                     |
+| `categoryId`       | Integer | Yes      |                                                     |
+| `userId`           | Integer | Yes      | No need to assign! Derived from user making request |
+| `completed`        | Boolean | No       |                                                     |
+| `completionPoints` | Integer | No       |                                                     |
+| `created_at`       | String  | No       |                                                     |
 
 #### Example
 
@@ -355,7 +355,6 @@ _http method_: **[POST]**
   {
     "habitTitle": "Run 10 miles",
     "categoryId": 1,
-    "userId": 2,
   }
 ```
 
@@ -369,11 +368,11 @@ _http method_: **[POST]**
   {
     "id": 1,
     "habitTitle": "Run 10 miles",
-    "completed": false,
+    "completed": 0 (binary for false),
     "completionPoints": 0,
     "userId": 2,
     "categoryId": 1,
-    "created_at": "2019-03-12 16:47:27"
+    "created_at": "2019-03-13 20:47:27"
   }
 ```
 

@@ -188,30 +188,43 @@ function deleteUser(req, res) {
 
 //******************** CREATE HABIT ******************/
 function createHabit(req, res) {
-  const { habitTitle, userId, categoryId } = req.body;
+  const { habitTitle, categoryId } = req.body;
   const newHabit = {
     habitTitle,
-    userId,
+    userId: req.decodedToken.subject,
     categoryId,
     completed: false,
     completionPoints: 0,
   };
 
-  //   if (!habitTitle || !userId || !categoryId) {
-  //     return res.status(417).json({
-  //       error: 'A habitTitle is REQUIRED to create a new habit.',
-  //     });
-  //   }
+  if (!habitTitle || !categoryId) {
+    res.status(412).json({
+      errorMessage: 'The habitTitle and categoryId are Required fields.',
+    });
+  }
 
-  helper
-    .addHabit(newHabit)
+  db('habits')
+    .insert(newHabit)
     .then(ids => {
-      console.log(newHabit);
-      res.status(201).json({ ids, message: 'Habit added successfully' });
-    })
-    .catch(err => {
-      console.log(newHabit);
-      res.status(500).json({ error: 'The habit could not be saved.' });
+      const id = ids[0];
+
+      db('habits')
+        .where({ id })
+        .first()
+        .then(habit => {
+          res
+            .status(201)
+            .json({
+              message: 'Habit creation Successful.',
+              habit,
+            })
+            .catch(err =>
+              res.status(500).json({ errorMessage: 'Error creating Habit.' }),
+            );
+        })
+        .catch(err =>
+          res.status(500).json({ errorMessage: 'Habit could not be created.' }),
+        );
     });
 }
 
