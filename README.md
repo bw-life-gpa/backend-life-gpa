@@ -285,6 +285,8 @@ _http method_: **[POST]**
 
 ### **Get Categories**
 
+## UPDATED: **This will only display habits of the logged in user without making an extra :id query**
+
 _method url_: `/api/categories`
 
 _http method_: **[GET]**
@@ -338,14 +340,14 @@ _http method_: **[POST]**
 
 #### Body
 
-| name               | type    | required | description |
-| ------------------ | ------- | -------- | ----------- |
-| `habitTitle`       | String  | Yes      |             |
-| `completed`        | Boolean | No       |             |
-| `userId`           | Integer | Yes      |             |
-| `categoryId`       | Integer | Yes      |             |
-| `completionPoints` | Integer | No       |             |
-| `created_at`       | String  | No       |             |
+| name               | type    | required | description                                         |
+| ------------------ | ------- | -------- | --------------------------------------------------- |
+| `habitTitle`       | String  | Yes      |                                                     |
+| `categoryId`       | Integer | Yes      |                                                     |
+| `userId`           | Integer | Yes      | No need to assign! Derived from user making request |
+| `completed`        | Boolean | No       |                                                     |
+| `completionPoints` | Integer | No       |                                                     |
+| `created_at`       | String  | No       |                                                     |
 
 #### Example
 
@@ -353,7 +355,6 @@ _http method_: **[POST]**
   {
     "habitTitle": "Run 10 miles",
     "categoryId": 1,
-    "userId": 2,
   }
 ```
 
@@ -367,11 +368,11 @@ _http method_: **[POST]**
   {
     "id": 1,
     "habitTitle": "Run 10 miles",
-    "completed": false,
+    "completed": 0 (binary for false),
     "completionPoints": 0,
     "userId": 2,
     "categoryId": 1,
-    "created_at": "2019-03-12 16:47:27"
+    "created_at": "2019-03-13 20:47:27"
   }
 ```
 
@@ -465,6 +466,51 @@ _http method_: **[GET]**
 ```
   {
     "message": "User Not Found"
+  }
+```
+
+**/------------------------------------------/ ALL HABITS /-------------------------------------/**
+
+### **Get Habits**
+
+## UPDATED: **This will only display habits of the logged in user without making an extra :id query**
+
+_method url_: `/api/habits`
+
+_http method_: **[GET]**
+
+#### Headers
+
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `authorization` | String | Yes      | token to Authorize user  |
+
+#### Response
+
+##### 200 (ok)
+
+###### Example response
+
+```
+{
+    "id": 2,
+    "habitTitle": "Run 10 miles",
+    "completed": false,
+    "completionPoints": 0,
+    "userId": 1,
+    "categoryId": 1,
+    "created_at": "2019-03-12 10:07:27"
+}
+```
+
+##### 403 (Forbidden)
+
+###### Example Response
+
+```
+  {
+    "message": "Invalid token"
   }
 ```
 
@@ -942,5 +988,72 @@ _http method_: **[DELETE]**
 ```
   {
     "message": "Invalid token"
+  }
+```
+
+##### 404 (Not Found)
+
+###### Example Response
+
+```
+  {
+    "errorMessage": "Habit does not exist."
+  }
+```
+
+**/------------------------------------------/ DELETE CATEGORY /---------------------------------------/**
+
+### **Delete a Category**
+
+_method url_: `/api/categories/:id (id of the category)`
+
+_http method_: **[DELETE]**
+
+#### Headers
+
+| name            | type   | required | description              |
+| --------------- | ------ | -------- | ------------------------ |
+| `Content-Type`  | String | Yes      | Must be application/json |
+| `authorization` | String | Yes      | token to Authorize user  |
+
+#### Response
+
+##### 200 (ok)
+
+###### Example Response
+
+```
+  {
+    "message":"Category successfully deleted"
+  }
+```
+
+##### 401 (Unauthorized)
+
+###### Example Response
+
+```
+  {
+    "errorMessage": "You are not authorized to delete this Category"
+  }
+```
+
+##### 403 (Forbidden)
+
+###### Example Response
+
+```
+  {
+    "message": "Invalid token"
+  }
+```
+
+##### 404 (Not Found)
+
+###### Example Response
+
+```
+  {
+    "errorMessage": "Category does not exist."
   }
 ```
