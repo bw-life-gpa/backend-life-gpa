@@ -29,7 +29,8 @@ module.exports = server => {
   server.get('/api/habits/:id', authenticate, getHabit);
   server.get('/api/users/habits/:id', authenticate, getUserHabits);
   server.put('/api/habits/:id', authenticate, updateHabit);
-  //server.delete('/api/habits/:id', deleteHabit);
+  server.delete('/api/habits/:id', authenticate, deleteHabit);
+  server.delete('/api/categories/:id', authenticate, deleteCategory);
   server.post('/api/categories', authenticate, createCategory);
   server.get('/api/categories', authenticate, getCategories);
   server.get('/api/categories/habits/:id', authenticate, getCategoryHabits);
@@ -217,6 +218,7 @@ function createHabit(req, res) {
 //******************** GET ALL HABITS ******************/
 function getHabits(req, res) {
   db('habits')
+    .where({ userId: req.decodedToken.subject })
     .then(habit => {
       res.json(habit);
     })
@@ -225,22 +227,9 @@ function getHabits(req, res) {
 
 //******************** GET HABIT ******************/
 function getHabit(req, res) {
-  db('habits')
-    .where({ id: req.params.id })
-    .then(habit => {
-      if (habit.length > 0) {
-        res.status(200).json(habit);
-      } else {
-        res.status(404).json({
-          errorMessage: `The habit with the specified id: ${
-            req.params.id
-          } does not exist.`,
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ error: 'Server cannot retrieve Habit.' });
-    });
+  helper.getHabitById(req.params.id).then(resp => {
+    res.json(resp[0]);
+  });
 }
 
 //******************** GET USER HABITS ******************/
@@ -296,6 +285,37 @@ function updateHabit(req, res) {
     });
 }
 
+//******************** DELETE HABIT ******************/
+function deleteHabit(req, res) {
+  const id = req.params.id;
+
+  helper.getHabitById(id).then(body => {
+    habit = body[0];
+
+    if (!habit) {
+      return res
+        .status(404)
+        .json({ errorMessage: `Habit with id: '${id}' does not exist.` });
+    }
+
+    if (habit.userId != req.decodedToken.subject) {
+      return res
+        .status(401)
+        .json({ errorMessage: 'You are not authorized to delete this Habit.' });
+    }
+  });
+  helper
+    .deleteHabit(id)
+    .then(deleted => {
+      res.status(200).json({ message: 'Habit successfully deleted.' });
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: `The Habit information could not be deleted.` });
+    });
+}
+
 //******************** CREATE CATEGORY ******************/
 function createCategory(req, res) {
   const { categoryTitle, color, userId } = req.body;
@@ -339,6 +359,7 @@ function createCategory(req, res) {
 //******************** GET CATEGORIES ******************/
 function getCategories(req, res) {
   db('category')
+    .where({ userId: req.decodedToken.subject })
     .then(category => {
       res.json(category);
     })
@@ -426,5 +447,36 @@ function updateCategory(req, res) {
       res
         .status(500)
         .json({ error: `The Category information could not be modified.` });
+    });
+}
+
+//******************** DELETE CATEGORY ******************/
+function deleteCategory(req, res) {
+  const id = req.params.id;
+
+  helper.getCategoryById(id).then(body => {
+    category = body[0];
+
+    if (!category) {
+      return res
+        .status(404)
+        .json({ errorMessage: `Category with id: '${id}' does not exist.` });
+    }
+
+    if (category.userId != req.decodedToken.subject) {
+      return res.status(401).json({
+        errorMessage: 'You are not authorized to delete this Category.',
+      });
+    }
+  });
+  helper
+    .deleteCategory(id)
+    .then(deleted => {
+      res.status(200).json({ message: 'Category successfully deleted.' });
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: `The Category information could not be deleted.` });
     });
 }

@@ -4,6 +4,9 @@ module.exports = {
   addHabit,
   addCategory,
   removeUser,
+  deleteHabit,
+  getHabitById,
+  deleteCategory,
   getUserById,
   getCategoryById,
   getHabitsByUser,
@@ -28,6 +31,10 @@ function removeUser(id) {
     .del();
 }
 
+function getHabitById(id) {
+  return db('habits').where({ id });
+}
+
 function getHabitsByUser(id) {
   return db('habits').where({ userId: id });
 }
@@ -46,6 +53,18 @@ function getUserById(id) {
 
 function getCategoryById(id) {
   return db('category').where({ id });
+}
+
+function deleteHabit(id) {
+  return db('habits')
+    .where({ id })
+    .del();
+}
+
+function deleteCategory(id) {
+  return db('category')
+    .where({ id })
+    .del();
 }
 
 function deleteAllHabitsByUser(id) {

@@ -21,6 +21,22 @@ exports.seed = function(knex, Promise) {
           categoryId: 2,
           created_at: knex.fn.now(),
         },
+        {
+          habitTitle: 'Lift 200lbs',
+          completed: false,
+          completionPoints: 0,
+          userId: 2,
+          categoryId: 2,
+          created_at: knex.fn.now(),
+        },
+        {
+          habitTitle: 'Lift 200lbs',
+          completed: false,
+          completionPoints: 0,
+          userId: 3,
+          categoryId: 2,
+          created_at: knex.fn.now(),
+        },
       ]);
     });
 };

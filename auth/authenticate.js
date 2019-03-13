@@ -12,8 +12,9 @@ function authenticate(req, res, next) {
   if (token) {
     jwt.verify(token, secret, (err, decodedToken) => {
       if (err) {
-        res.status(401).json({ message: 'Invalid token' });
+        res.status(401).json({ message: 'Invalid token Provided.' });
       } else {
+        req.decodedToken = decodedToken;
         next();
       }
     });
