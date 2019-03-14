@@ -9,7 +9,7 @@ const { generateToken } = require('../auth/tokenservice');
 
 module.exports = server => {
   server.get('/', (req, res) => {
-    res.send(`
+    res.status(200).send(`
       <div>
         <h2>Server Running Live...</h2>
         <p>Url to Login endpoint <strong>'/api/login'</strong></p>

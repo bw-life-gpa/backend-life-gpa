@@ -1,12 +1,12 @@
 {
   "name": "backend-life-gpa",
   "version": "1.0.0",
-  "description": "",
+  "description": "**Backend Architect:** Elisha Atulomah",
   "main": "index.js",
   "scripts": {
     "server": "nodemon index.js",
     "start": "node index.js",
-    "test": "jest --watch"
+    "test": "cross-env DB_ENV=testing jest --watch --verbose"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "cross-env": "^5.2.0",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "helmet": "^3.16.0",
@@ -31,6 +32,10 @@
   },
   "devDependencies": {
     "jest": "^24.5.0",
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.18.10",
+    "supertest": "^4.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
