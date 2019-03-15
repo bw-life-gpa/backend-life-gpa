@@ -331,10 +331,10 @@ function deleteHabit(req, res) {
 
 //******************** CREATE CATEGORY ******************/
 function createCategory(req, res) {
-  const { categoryTitle, color, userId } = req.body;
-  const category = { categoryTitle, color, userId };
+  const { categoryTitle, color } = req.body;
+  const category = { categoryTitle, color, userId: req.decodedToken.subject };
 
-  if (!categoryTitle || !color || !userId) {
+  if (!categoryTitle || !color) {
     res.status(412).json({
       errorMessage: 'The categoryTitle, color and userId are Required fields.',
     });
