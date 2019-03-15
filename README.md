@@ -207,6 +207,8 @@ _http method_: **[GET]**
 
 ### **Create a Category**
 
+## UPDATED: **You can create a category of the logged in user without hard coding the userId**
+
 _method url_: `/api/categories`
 
 _http method_: **[POST]**
@@ -220,11 +222,11 @@ _http method_: **[POST]**
 
 #### Body
 
-| name            | type    | required | description |
-| --------------- | ------- | -------- | ----------- |
-| `categoryTitle` | String  | Yes      |             |
-| `color`         | String  | Yes      |             |
-| `userId`        | Integer | Yes      |             |
+| name            | type    | required | description                                         |
+| --------------- | ------- | -------- | --------------------------------------------------- |
+| `categoryTitle` | String  | Yes      |                                                     |
+| `color`         | String  | Yes      |                                                     |
+| `userId`        | Integer | Yes      | No need to assign! Derived from user making request |
 
 #### Example
 
