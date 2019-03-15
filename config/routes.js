@@ -9,9 +9,9 @@ const { generateToken } = require('../auth/tokenservice');
 
 module.exports = server => {
   server.get('/', (req, res) => {
-    res.send(`
+    res.status(200).send(`
       <div>
-        <h2>Server Running Live</h2>
+        <h2>Server Running Live...</h2>
         <p>Url to Login endpoint <strong>'/api/login'</strong></p>
         <p>Url to Register endpoint <strong>'/api/register'</strong></p>
       </div>`);
@@ -24,7 +24,7 @@ module.exports = server => {
   server.get('/api/users/:id', authenticate, getUser);
   server.put('/api/users/:id', authenticate, updateUser);
   server.delete('/api/users/:id', authenticate, deleteUser);
-  server.post('/api/habits', authenticate, createHabit); //--****-- NEED TO FIX/BROKEN --****---/
+  server.post('/api/habits', authenticate, createHabit);
   server.get('/api/habits', authenticate, getHabits);
   server.get('/api/habits/:id', authenticate, getHabit);
   server.get('/api/users/habits/:id', authenticate, getUserHabits);
