@@ -3,8 +3,8 @@
 **Backend Architect:** Elisha Atulomah
 
 ##
-
-### Live Backend URL: https://lifegpa.herokuapp.com/
+### Live Frontend URL: [LifeGPA Front-End](https://try-lifegpa.netlify.com/)
+### Live Backend URL: [LifeGPA Back-End](https://lifegpa.herokuapp.com/)
 
 ##
 
